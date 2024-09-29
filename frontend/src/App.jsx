@@ -2,15 +2,25 @@ import { React, useEffect, useState , useRef } from 'react'
 import { Canvas ,useFrame } from "@react-three/fiber"
 import { useGLTF , OrbitControls , PerspectiveCamera } from "@react-three/drei"
 
-function App() {
+function App() {  
 
   // GET ORDERS
 
-  const [orders , setOrders] = useState(0)   
-  
+  const [orders , setOrders] = useState(0)
+
+  const handleGetOrders = (ord) => {
+    useEffect(()=> {
+      setOrders(ord/5)
+    } , [])
+  }   
+
+  // GAME STATE
+
+  const [isPaused , setIsPaused] = useState(false)
+
   // Production Stage
   
-  const [stage , setStage] = useState('')
+  const [stage , setStage] = useState('paused')
 
   // DECLARING CURRENCY AND PRODUCT COUNT
 
@@ -29,12 +39,15 @@ function App() {
   }
 
   const startGame = () => {
-    const {scene} = useGLTF('/assets/pipe/scene.gltf');
-    scene.position.x = 1.5
+    // const {scene} = useGLTF('/assets/pipe/scene.gltf');
+    // scene.position.x = 1.5
 
     setCurrency((prev) => prev - 20)
-    if(currency < 5) alert('gameover');
+    
+    if(currency < 5) endGame();
     else setStage('hammering');
+  
+    setIsPaused(false)
   }
 
   const newInput = () => {
@@ -42,7 +55,7 @@ function App() {
     scene.position.x = 1.5   
 
     setCurrency((prev) => prev - 20)
-    if(currency < 5) alert('gameover');
+    if(currency < 5) endGame();
     else setStage('hammering');
   }
 
@@ -73,7 +86,7 @@ function App() {
 
   const endHammer = () => {
     setCurrency((prev) => prev - 5)
-    if(currency < 5) alert('gameover');
+    if(currency < 5) endGame();
     else setStage('quenching')
   }
 
@@ -105,7 +118,7 @@ function App() {
 
   const endQuench = () => {
     setCurrency((prev) => prev - 5)
-    if(currency < 5) alert('gameover');
+    if(currency < 5) endGame();
     else setStage('painting');
   }
 
@@ -137,49 +150,52 @@ function App() {
   // BUTTONS
 
   const Buttons = () => {
-    if (stage === '' && products === 0) {
+    if (stage === 'paused') {
       return(
         <>
-         <button onClick={startGame}>Start</button>
+         <button className='bg-gray-800 text-yellow-300 font-bold py-4 px-8 rounded-lg shadow-lg transform transition-transform hover:translate-y-1 active:translate-y-2 hover:shadow-md active:shadow-sm border border-gray-500 relative before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-gradient-to-r before:from-gray-700 before:via-gray-900 before:to-gray-700 before:rounded-lg before:opacity-0 hover:before:opacity-20' onClick={startGame}>Start</button>
         </>
       )
-    } else if (stage === '' && products > 0) {
+    } else if (stage === 'next') {
       return(
         <>
-         <button onClick={newInput}>New Product</button>
+         <button className='bg-gradient-to-r from-yellow-500 to-yellow-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transform transition-transform hover:scale-105 active:scale-95 active:shadow-sm border-4 border-yellow-800 relative before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-gradient-to-r before:from-yellow-600 before:to-yellow-800 before:rounded-lg before:opacity-0 hover:before:opacity-20' onClick={newInput}>New Product</button>
         </>
       )
     } else if (stage === 'hammering') {
       return(
         <>              
           <button
+          className="bg-gray-900 text-red-500 font-bold py-4 px-8 rounded-md shadow-lg transform transition-transform hover:translate-y-1 active:translate-y-2 hover:shadow-md active:shadow-sm border-4 border-gray-700 relative before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-gradient-to-r before:from-gray-800 before:via-gray-600 before:to-gray-800 before:rounded-md before:opacity-0 hover:before:opacity-10"
             onMouseDown={startHammering}
             onMouseUp={stopHammering}
-            onMouseLeave={stopHammering}>Hammer
+            onMouseLeave={stopHammering}>🔨 Hammer
           </button>
-          <button onClick={endHammer}>endHammer</button>
+          <button className='bg-red-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transform transition-transform hover:translate-y-1 active:translate-y-2 hover:shadow-lg active:shadow-sm border-4 border-red-700 relative before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-gradient-to-r before:from-red-700 before:via-red-600 before:to-red-700 before:rounded-lg before:opacity-0 hover:before:opacity-10' onClick={endHammer}>🛑 End Hammering</button>
         </>
       )
     } else if (stage === 'quenching') {
       return(
         <>
-          <button         
+          <button
+          className='bg-blue-500 text-white font-bold py-3 px-6 rounded-lg shadow-md transform transition-transform hover:translate-y-1 active:translate-y-2 hover:shadow-lg active:shadow-sm border-4 border-blue-600 relative before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-gradient-to-r before:from-blue-600 before:via-blue-500 before:to-blue-600 before:rounded-lg before:opacity-0 hover:before:opacity-10'         
             onMouseDown={startQuenching}
             onMouseUp={stopQuenching}
-            onMouseLeave={stopQuenching}>Quench
+            onMouseLeave={stopQuenching}>💧 Quench
           </button>
-          <button onClick={endQuench}>endQuench</button>    
+          <button className='bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transform transition-transform hover:translate-y-1 active:translate-y-2 hover:shadow-lg active:shadow-sm border-4 border-blue-700 relative before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-gradient-to-r before:from-blue-700 before:via-blue-600 before:to-blue-700 before:rounded-lg before:opacity-0 hover:before:opacity-10' onClick={endQuench}>🟦 End Quenching</button>    
         </>
       )
     } else if (stage === 'painting') {
       return(
         <>              
           <button
+          className='bg-green-500 text-white font-bold py-3 px-6 rounded-lg shadow-md transform transition-transform hover:translate-y-1 active:translate-y-2 hover:shadow-lg active:shadow-sm border-4 border-green-600 relative before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-gradient-to-r before:from-green-600 before:via-green-500 before:to-green-600 before:rounded-lg before:opacity-0 hover:before:opacity-10'
             onMouseDown={startPainting}
             onMouseUp={stopPainting}
-            onMouseLeave={stopPainting}>Paint
+            onMouseLeave={stopPainting}>🖌️ Paint
           </button>
-          <button onClick={handleFinishedProduct}>Finish and Deploy</button>
+          <button className='bg-gradient-to-r from-blue-500 to-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transform transition-transform hover:scale-105 active:scale-95 active:shadow-sm border-4 border-blue-800 relative before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-gradient-to-r before:from-blue-600 before:to-blue-800 before:rounded-lg before:opacity-0 hover:before:opacity-20' onClick={handleFinishedProduct}>Finish And Deploy</button>
         </>
       )
     }
@@ -218,7 +234,7 @@ function App() {
         <>
           <div className="w-64 bg-gray-200 rounded-full h-4 overflow-hidden">
             <div
-              className="bg-red-500 h-full text-center text-white rounded-full"
+              className="bg-green-500 h-full text-center text-white rounded-full"
               style={{ width: `${paintNumber/toBePainted*100}%`}}
             >
             </div>
@@ -230,11 +246,13 @@ function App() {
 
     // COOLDOWN
 
+    const handleTimeUp = (val) => {
+      val ? endGame() : 0
+    }
 
     // END GAME CHECK
 
     const endGame = () => {
-
 
     // RESET THE PROGRESS
 
@@ -242,17 +260,18 @@ function App() {
       setQuenchtime(0)
       setPaintNumber(0)
 
-      setStage('')
+      setIsPaused(true)
+      setStage('paused')
+
+      // alert('Game Over! Hit Refresh to start Again !')
     }
 
     // Value Evaluation
 
-    // SHAILEN BHAI IDHAR FINISH PRODUCT WALA FUNCTION H,  JAB CLICK HOGA TAB EK ANMATION LAGA DENA KI EK FINISHED PRODUCT TABLE SE RIGHT WALE CONVEYOR BELT KE THROUGH SCREEN KE BAHAAR RIGHT ME JAA RAHA
-
     const handleFinishedProduct = () => {
 
       const price = (Math.floor(rammingNumber)/toBeRammed)*50 + (Math.floor(quenchtime)/toBeQuenchedtime)*20 + (Math.floor(paintNumber)/toBePainted)*10 
-      setCurrency( (prev) => prev + price)
+      setCurrency((prev) => prev + price)
       setProducts((prev) => prev+1)
 
       // reset the stage progresses
@@ -261,7 +280,27 @@ function App() {
       setQuenchtime(0)
       setPaintNumber(0)
 
-      setStage('')
+      setStage('next')
+    }
+
+    const resetGame = () => {
+      window.location.reload();
+    }
+
+    const Restart = () => {
+      return(
+        <>
+          <div className='border w-screen h-screen bg-opacity-50 flex flex-col justify-center items-center absolute z-20'>
+              <div className='flex flex-col'>
+                <span>Your Stats :</span>
+                <span> {`Orders finished : ${products} / ${orders}`} </span>
+                <span> {`Profit : ${currency - 50 }`} </span>
+              </div>
+
+              <button className='flex items-center justify-center bg-green-500 text-white font-bold py-2 px-4 rounded-lg shadow-lg transform transition-transform duration-200 hover:scale-105 active:scale-95' onClick={resetGame}> 🔄 Restart Game </button>
+          </div>
+        </>
+      )
     }
   
 
@@ -300,38 +339,42 @@ function App() {
 
         {/* HTML */}
 
-        <div className="html_component w-screen h-1/2 flex flex-col justify-around items-center absolute bottom-0 border">
+        <div className="html_component w-screen h-1/2 flex flex-col justify-around items-center absolute bottom-0">
 
-          <div id='modals' className='border w-full flex items-center justify-center'>
+          <div id='modals' className='w-full flex items-center justify-center'>
             <Modals />
           </div>
 
-          <div id='buttons' className='border w-full h-min flex justify-around'>
+          <div id='buttons' className='w-full h-min flex justify-around'>
               <Buttons />
           </div>
 
           {/* Score */}
-          <div id='score' className='border w-24 h-12 flex justify-center items-center absolute top-0 right-0 italic'>
+          <div id='score' className='w-24 h-12 flex justify-center items-center absolute top-0 right-0 italic'>
             {`${currency >= 0 ? currency : 0} $`} <br/>
-            {`Products - ${products}`}
+            {`Products - ${products > 0 ? products : ''} / ${orders}`}
           </div>
 
           {/* Timer */}
-          <div id='timer' className='border w-24 h-16 flex justify-center items-center absolute top-0 left-0 italic text-sm'>
-            <Timer />
+          <div id='timer' className='w-24 h-16 flex justify-center items-center absolute top-0 left-0 italic text-sm'>
+            <Timer onValReturn={handleTimeUp} getOrders={handleGetOrders}/>
           </div>
         </div>
+
+        {isPaused ? <Restart /> : 0}
           
       </div>
     </>
   )
 }
 
-// SHAILEN BHAAI TIMER KA JUGAAD LAGAO. TAAKI 0 HONE PE GAME STOP HO JAEEEE!!!
+const Timer = ({onValReturn , getOrders}) => {
 
-const Timer = () => {
-  const orders = orderGenerator();
-  const [time, setTime] = useState(orders*2);
+  const randomNum = orderGenerator()
+  const [time, setTime] = useState(orderGenerator(randomNum)*5)    
+  getOrders(time)
+
+  if (time <= 0) onValReturn(1);
     
   useEffect(() => {
     if (time === 0) return; // Stop when time is 0
