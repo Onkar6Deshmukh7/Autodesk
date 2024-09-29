@@ -3,21 +3,6 @@ import { Canvas ,useFrame } from "@react-three/fiber"
 import { useGLTF , OrbitControls , PerspectiveCamera } from "@react-three/drei"
 
 function App() {
-  
-  const Workbench = () => {
-    const {scene} = useGLTF('/assets/workbench/scene.gltf');
-    return <primitive object={scene} scale={1} />
-  }
-
-  const Conveyer = () => {
-    const {scene} = useGLTF('/assets/conveyer/scene.gltf');
-    return <primitive object={scene} scale={[ 0.5 , 1 , 2]} />
-  }
-  
-  const Axe = () => {
-    const {scene} = useGLTF('/assets/axe/scene.gltf');
-    return <primitive object={scene} scale={0.002} />
-  }
 
   // GET ORDERS
 
@@ -301,7 +286,7 @@ function App() {
             {/* Factory */}
 
             <mesh position={[ 0 , 0 , 0 ]}>
-              <Workbench />
+              {/* <Workbench /> */}
             </mesh>
 
             <mesh position={[ -2 , 0.12 , 0 ]} rotation={[ 0 , 0 , 0]}>
