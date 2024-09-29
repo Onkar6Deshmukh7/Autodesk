@@ -1,15 +1,15 @@
 import { React, useEffect, useState , useRef } from 'react'
 import { Canvas ,useFrame } from "@react-three/fiber"
 import { useGLTF , OrbitControls , PerspectiveCamera } from "@react-three/drei"
+import ForgeViewer from './components/viewer/ForgeViewer'
 
 function App() {
-
   // GET ORDERS
+  const urn = "dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6YXNzZW1ibHkwMS9ib3guaXB0"
+  const [orders , setOrders] = useState(0)
 
-  const [orders , setOrders] = useState(0)   
-  
   // Production Stage
-  
+
   const [stage , setStage] = useState('')
 
   // DECLARING CURRENCY AND PRODUCT COUNT
@@ -17,10 +17,10 @@ function App() {
   const [currency , setCurrency] = useState(50);
   const [products , setProducts] = useState(0);
 
-  // Call new Pipe / Make Pipe 
+  // Call new Pipe / Make Pipe
   // SHAILEN BHAI IDHAR NEW INOUT RAW MATERIAL DEFINE KARA H, JAB BHI CALL HOGA ANIMATION AISA RAHE KI EK RAW ITEM LEFT CONVEYER BELT SE TABLE TAK AA RAHA H
-  
-  // ANIMATION KA EXAMPLE H LINE 48 PE 
+
+  // ANIMATION KA EXAMPLE H LINE 48 PE
 
   const Pipe = () => {
     const {scene} = useGLTF('/assets/pipe/scene.gltf');
@@ -39,7 +39,7 @@ function App() {
 
   const newInput = () => {
     const {scene} = useGLTF('/assets/pipe/scene.gltf');
-    scene.position.x = 1.5   
+    scene.position.x = 1.5
 
     setCurrency((prev) => prev - 20)
     if(currency < 5) alert('gameover');
@@ -151,7 +151,7 @@ function App() {
       )
     } else if (stage === 'hammering') {
       return(
-        <>              
+        <>
           <button
             onMouseDown={startHammering}
             onMouseUp={stopHammering}
@@ -163,17 +163,17 @@ function App() {
     } else if (stage === 'quenching') {
       return(
         <>
-          <button         
+          <button
             onMouseDown={startQuenching}
             onMouseUp={stopQuenching}
             onMouseLeave={stopQuenching}>Quench
           </button>
-          <button onClick={endQuench}>endQuench</button>    
+          <button onClick={endQuench}>endQuench</button>
         </>
       )
     } else if (stage === 'painting') {
       return(
-        <>              
+        <>
           <button
             onMouseDown={startPainting}
             onMouseUp={stopPainting}
@@ -186,7 +186,7 @@ function App() {
   }
 
   // MODALS
-  
+
   const Modals = () => {
 
      if (stage === 'hammering') {
@@ -201,7 +201,7 @@ function App() {
           </div>
         </>
       )
-      
+
     } else if(stage === 'quenching') {
       return(
         <>
@@ -251,7 +251,7 @@ function App() {
 
     const handleFinishedProduct = () => {
 
-      const price = (Math.floor(rammingNumber)/toBeRammed)*50 + (Math.floor(quenchtime)/toBeQuenchedtime)*20 + (Math.floor(paintNumber)/toBePainted)*10 
+      const price = (Math.floor(rammingNumber)/toBeRammed)*50 + (Math.floor(quenchtime)/toBeQuenchedtime)*20 + (Math.floor(paintNumber)/toBePainted)*10
       setCurrency( (prev) => prev + price)
       setProducts((prev) => prev+1)
 
@@ -263,7 +263,7 @@ function App() {
 
       setStage('')
     }
-  
+
 
   return (
     <>
@@ -300,28 +300,28 @@ function App() {
 
         {/* HTML */}
 
-        <div className="html_component w-screen h-1/2 flex flex-col justify-around items-center absolute bottom-0 border">
+          <div className="html_component w-screen h-1/2 flex flex-col justify-around items-center absolute bottom-0 border">
 
-          <div id='modals' className='border w-full flex items-center justify-center'>
-            <Modals />
-          </div>
+              <div id='modals' className='border w-full flex items-center justify-center'>
+                <Modals />
+              </div>
 
-          <div id='buttons' className='border w-full h-min flex justify-around'>
-              <Buttons />
-          </div>
+              <div id='buttons' className='border w-full h-min flex justify-around'>
+                  <Buttons />
+              </div>
 
-          {/* Score */}
-          <div id='score' className='border w-24 h-12 flex justify-center items-center absolute top-0 right-0 italic'>
-            {`${currency >= 0 ? currency : 0} $`} <br/>
-            {`Products - ${products}`}
-          </div>
+              {/* Score */}
+              <div id='score' className='border w-24 h-12 flex justify-center items-center absolute top-0 right-0 italic'>
+                {`${currency >= 0 ? currency : 0} $`} <br/>
+                {`Products - ${products}`}
+              </div>
 
-          {/* Timer */}
-          <div id='timer' className='border w-24 h-16 flex justify-center items-center absolute top-0 left-0 italic text-sm'>
-            <Timer />
+              {/* Timer */}
+              <div id='timer' className='border w-24 h-16 flex justify-center items-center absolute top-0 left-0 italic text-sm'>
+                <Timer />
+              </div>
           </div>
-        </div>
-          
+  <ForgeViewer></ForgeViewer>
       </div>
     </>
   )
@@ -332,7 +332,7 @@ function App() {
 const Timer = () => {
   const orders = orderGenerator();
   const [time, setTime] = useState(orders*2);
-    
+
   useEffect(() => {
     if (time === 0) return; // Stop when time is 0
     const timer = setInterval(() => setTime((prev) => prev - 1), 1000);
