@@ -1,3 +1,5 @@
+//Winning submission made by Onkar and Shailendra for AutoDesk Eduhack (Ctrl + Alt + Delete Challenge)
+
 import { React, useEffect, useState , useRef } from 'react'
 import { Canvas ,useFrame } from "@react-three/fiber"
 import { useGLTF , OrbitControls , PerspectiveCamera } from "@react-three/drei"
@@ -7,7 +9,7 @@ import ramm from '/sounds/ramm.mp3'
 import quenchS from '/sounds/quench.mp3'
 import sprayS from '/sounds/spray.mp3'
 
-function App() {  
+function App() {
 
   // Sounds
 
@@ -23,14 +25,14 @@ function App() {
     useEffect(()=> {
       setOrders(ord/15)
     } , [])
-  }   
+  }
 
   // GAME STATE
 
   const [isPaused , setIsPaused] = useState(false)
 
   // Production Stage
-  
+
   const [stage , setStage] = useState('paused')
 
   // DECLARING CURRENCY AND PRODUCT COUNT
@@ -49,10 +51,10 @@ function App() {
     // scene.position.x = 1.5
 
     setCurrency((prev) => prev - 20)
-    
+
     if(currency < 5) endGame();
     else setStage('hammering');
-  
+
     setIsPaused(false)
   }
 
@@ -190,12 +192,12 @@ function App() {
       return(
         <>
           <button
-          className='bg-blue-500 text-white font-bold py-3 px-6 rounded-lg shadow-md transform transition-transform hover:translate-y-1 active:translate-y-2 hover:shadow-lg active:shadow-sm border-4 border-blue-600 relative before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-gradient-to-r before:from-blue-600 before:via-blue-500 before:to-blue-600 before:rounded-lg before:opacity-0 hover:before:opacity-10 z-30'         
+          className='bg-blue-500 text-white font-bold py-3 px-6 rounded-lg shadow-md transform transition-transform hover:translate-y-1 active:translate-y-2 hover:shadow-lg active:shadow-sm border-4 border-blue-600 relative before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-gradient-to-r before:from-blue-600 before:via-blue-500 before:to-blue-600 before:rounded-lg before:opacity-0 hover:before:opacity-10 z-30'
             onMouseDown={startQuenching}
             onMouseUp={stopQuenching}
             onMouseLeave={stopQuenching}>💧 Quench
           </button>
-          <button className='bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transform transition-transform hover:translate-y-1 active:translate-y-2 hover:shadow-lg active:shadow-sm border-4 border-blue-700 relative before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-gradient-to-r before:from-blue-700 before:via-blue-600 before:to-blue-700 before:rounded-lg before:opacity-0 hover:before:opacity-10 z-30' onClick={endQuench}>🟦 End Quenching</button>    
+          <button className='bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transform transition-transform hover:translate-y-1 active:translate-y-2 hover:shadow-lg active:shadow-sm border-4 border-blue-700 relative before:absolute before:top-0 before:left-0 before:w-full before:h-full before:bg-gradient-to-r before:from-blue-700 before:via-blue-600 before:to-blue-700 before:rounded-lg before:opacity-0 hover:before:opacity-10 z-30' onClick={endQuench}>🟦 End Quenching</button>
         </>
       )
     } else if (stage === 'painting') {
@@ -282,7 +284,7 @@ function App() {
 
     const handleFinishedProduct = () => {
 
-      const price = (Math.floor(rammingNumber)/toBeRammed)*50 + (Math.floor(quenchtime)/toBeQuenchedtime)*20 + (Math.floor(paintNumber)/toBePainted)*10 
+      const price = (Math.floor(rammingNumber)/toBeRammed)*50 + (Math.floor(quenchtime)/toBeQuenchedtime)*20 + (Math.floor(paintNumber)/toBePainted)*10
       setCurrency((prev) => prev + price)
       setProducts((prev) => prev+1)
 
@@ -382,7 +384,7 @@ function App() {
 
         {isPaused ? <Restart /> : 0}
 
-          
+
       </div>
     </>
   )
@@ -391,11 +393,11 @@ function App() {
 const Timer = ({onValReturn , getOrders}) => {
 
   const randomNum = orderGenerator()
-  const [time, setTime] = useState(orderGenerator(randomNum)*15)    
+  const [time, setTime] = useState(orderGenerator(randomNum)*15)
   getOrders(time)
 
   if (time <= 0) onValReturn(1);
-    
+
   useEffect(() => {
     if (time === 0) return; // Stop when time is 0
     const timer = setInterval(() => setTime((prev) => prev - 1), 1000);
